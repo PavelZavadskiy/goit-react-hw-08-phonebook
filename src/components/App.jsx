@@ -9,18 +9,12 @@ import { useEffect } from 'react';
 import { refreshUser } from 'redux/auth/operations';
 import { RestrictedRoute } from './RestrictedRoute';
 import { PrivateRoute } from './PrivateRoute';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
 
 export function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(refreshUser())
-      .then(unwrapResult)
-      .catch(rejectedValueOrSerializedError => {
-        toast.error(rejectedValueOrSerializedError);
-      });
+    dispatch(refreshUser());
   }, [dispatch]);
 
   return (
