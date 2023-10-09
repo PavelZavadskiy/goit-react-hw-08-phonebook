@@ -10,13 +10,10 @@ const setAuthHeader = (token = null) => {
 
 const register = createAsyncThunk('auth/signup', async (credentials, thunkAPI) => {
   try {
-    console.log('register : ', credentials);
     const res = await axios.post('/users/signup', credentials);
-    console.log('register : ', res);
     setAuthHeader(res.data.token);
     return res.data;
   } catch (error) {
-    console.log('error : ', error);
     return thunkAPI.rejectWithValue('Registaration error');
   }
 });
@@ -27,7 +24,6 @@ const logIn = createAsyncThunk('auth/login', async (credentials, thunkAPI) => {
     setAuthHeader(res.data.token);
     return res.data;
   } catch (error) {
-    console.log('error : ', error);
     return thunkAPI.rejectWithValue('Autorization error');
   }
 });
@@ -37,7 +33,6 @@ const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
     await axios.post('/users/logout');
     setAuthHeader();
   } catch (error) {
-    console.log('error : ', error);
     return thunkAPI.rejectWithValue(error.message);
   }
 });
@@ -53,7 +48,6 @@ const refreshUser = createAsyncThunk('auth/refresh', async (_, thunkAPI) => {
     const res = await axios.get('/users/current');
     return res.data;
   } catch (error) {
-    console.log('error : ', error);
     return thunkAPI.rejectWithValue('Autorization error');
   }
 });
