@@ -1,16 +1,37 @@
-import { WrapperRoot } from './App.styled';
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import { Filter } from './Filter/Filter';
+import { Route, Routes } from 'react-router-dom';
+import { Home } from 'pages/Home';
+import { Layout } from './Layout/Layout';
+import { Contacts } from 'pages/Contacts';
+import { Login } from 'pages/Login';
+import { Logup } from 'pages/Logup';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { refreshUser } from 'redux/auth/operations';
+import { RestrictedRoute } from './RestrictedRoute';
+import { PrivateRoute } from './PrivateRoute';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 export function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(refreshUser())
+      .then(unwrapResult)
+      .catch(rejectedValueOrSerializedError => {
+        toast.error(rejectedValueOrSerializedError);
+      });
+  }, [dispatch]);
+
   return (
-    <WrapperRoot>
-      <h1>Phonebook</h1>
-      <ContactForm />
-      <h2>Contacts</h2>
-      <Filter />
-      <ContactList />
-    </WrapperRoot>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="/register" element={<RestrictedRoute redirectTo="/contacts" component={<Logup />} />} />
+        <Route path="/login" element={<RestrictedRoute redirectTo="/contacts" component={<Login />} />} />
+        <Route path="/contacts" element={<PrivateRoute redirectTo="/login" component={<Contacts />} />} />
+        <Route path="*" element={<Home />} />
+      </Route>
+    </Routes>
   );
 }
